@@ -2,11 +2,16 @@
 //Object orientation revisted
 //part one
 
-var flying_saucer;
+var flyingSaucers;
 
 function setup() {
-  createCanvas(800, 600);
+  createCanvas(1200, 600);
   noStroke();
+
+  flyingSaucers = [];
+  for (var i = 0; i < 5; i++) {
+    flyingSaucers.push(new FlyingSaucer(100 + i * 250, 100));
+  }
 }
 
 function draw() {
@@ -15,11 +20,14 @@ function draw() {
   //draw the ground
   fill(0, 50, 0);
   rect(0, height - 100, width, 100);
-  if (flying_saucer.beam_on == true) {
-    flying_saucer.beam();
+  for (var i = 0; i < flyingSaucers.length; i++) {
+    if (flyingSaucers[i].beam_on == true) {
+      flyingSaucers[i].beam();
+    }
+    flyingSaucers[i].hover();
+    flyingSaucers[i].draw();
   }
 }
-
 function keyPressed() {
   flying_saucer.beam_on = true;
 }
@@ -28,21 +36,25 @@ function keyReleased() {
   flying_saucer.beam_on = false;
 }
 
-function FlyingSaucer() {
-  (this.x = 400),
-    (this.y = 150),
-    (this.width = 200),
-    (this.height = 50),
-    (this.window_width = 0.75),
+function FlyingSaucer(x, y) {
+  (this.x = x),
+    (this.y = y),
+    (this.width = random(150, 250)),
+    (this.height = random(75, 125)),
+    (this.window_width = 0.85),
     (this.window_height = 0.85),
     (this.base_height = 0.45),
-    (this.num_lights = 20),
+    (this.num_lights = round(random(10, 20))),
     (this.brightnesses = []),
     (this.beam_on = false),
     (this.hover = function () {
-      //console.log('hover')
       this.x += random(-2, 2);
       this.y += random(-1, 1);
+      if (this.beam_on == false && random() > 0.98) {
+        this.beam_on = true;
+      } else if(this.beam_on == true && random() > 0.96m){
+        this.beam_on = false;
+      }
     }),
     (this.beam = function () {
       fill(255, 255, 100, 150);
@@ -67,23 +79,9 @@ function FlyingSaucer() {
         TWO_PI
       );
       fill(150);
-      arc(
-        this.x,
-        this.y,
-        this.width,
-        this.height / 2,
-        PI,
-        TWO_PI
-      );
+      arc(this.x, this.y, this.width, this.height / 2, PI, TWO_PI);
       fill(50);
-      arc(
-        this.x,
-        this.y,
-        this.width,
-        this.height * this.base_height,
-        0,
-        PI
-      );
+      arc(this.x, this.y, this.width, this.height * this.base_height, 0, PI);
       this.hover();
 
       fill(255);
